@@ -80,4 +80,32 @@ class JobController extends AbstractController
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * Edits an existing job entity
+     *
+     * @Route("/job/{token}/edit", name="job.edit", methods={"GET", "POST"}, requirements={"token"="\w+"})
+     *
+     * @param Request $request
+     * @param Job $job
+     * @param EntityManagerInterface $em
+     *
+     * @return Response
+     */
+    public function edit(Request $request, Job $job, EntityManagerInterface $em) : Response
+    {
+        $form = $this->createForm(JobType::class, $job);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $em->flush();
+
+            return $this->redirectToRoute('job.list');
+        }
+
+        return $this->render('job/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
 }
